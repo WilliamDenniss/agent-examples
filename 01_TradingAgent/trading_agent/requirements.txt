@@ -1,0 +1,4 @@
+google-adk
+alpaca-py
+google-cloud-aiplatform[agent_engines,adk]
+python-dotenv
