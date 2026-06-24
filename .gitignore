@@ -3,4 +3,5 @@ trading-env/
 __pycache__/
 .adk/
 agent-env/
+.venv
 
