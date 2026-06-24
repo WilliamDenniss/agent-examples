@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trading-agent
+  namespace: trading
+  labels:
+    app: trading-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trading-agent
+  template:
+    metadata:
+      labels:
+        app: trading-agent
+    spec:
+      # Workload Identity: this KSA must be bound to a GSA with roles/aiplatform.user
+      # so the agentengine:// Sessions + Memory services can authenticate.
+      serviceAccountName: trading-agent
+      containers:
+        - name: trading-agent
+          image: us-west1-docker.pkg.dev/your-project-id/trading-agent/trading-agent/agent:v1
+          ports:
+            - containerPort: 8080
+          # All env vars from docker-env.
+          env:
+            - name: GOOGLE_GENAI_USE_VERTEXAI
+              value: "TRUE"
+            - name: APCA_API_KEY_ID
+              value: your-key-id
+            - name: APCA_API_SECRET_KEY
+              value: your-secret-key
+            - name: SESSION_SERVICE_URI
+              value: agentengine://projects/555OOO555/locations/us-west1/reasoningEngines/5272175847371964416
+            - name: MEMORY_SERVICE_URI
+              value: agentengine://projects/555OOO555/locations/us-west1/reasoningEngines/5272175847371964416
+          resources:
+            requests:
+              cpu: ".5"
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 2Gi
+          readinessProbe:
+            httpGet:
+              path: /list-apps
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 20
+
