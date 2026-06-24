@@ -191,7 +191,9 @@ async def save_to_memory(callback_context: CallbackContext):
             author="TradingAgent",
             timestamp=datetime.now(timezone.utc).isoformat(),
         )],
-        custom_metadata={"type": "trade", "force_flush": True},
+        # Set a TTL of ~1 month (30 days) so the trading history can be recalled
+        # for a month while avoiding too much clutter.
+        custom_metadata={"type": "trade", "force_flush": True, "ttl": "2592000s"},
     )
 
 # Define the Agent
