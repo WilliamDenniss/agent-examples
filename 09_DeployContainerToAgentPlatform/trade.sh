@@ -6,12 +6,11 @@ set -e
 # same :query / :streamQuery contract as the managed deployments (02_Memories,
 # 03_DeterministicMemories).
 
-# Update with the resource name printed by deploy_byoc.sh
+# Set RESOURCE_NAME to the resource name printed by deploy_byoc.sh
 # (see https://console.cloud.google.com/agent-platform/runtimes).
-RESOURCE_NAME=projects/555OOO555/locations/us-west1/reasoningEngines/7348792672426917888
-
-if [[ "$RESOURCE_NAME" == *"555OOO555"* ]]; then
-  echo "Error: Update RESOURCE_NAME in trade.sh with the resource printed by deploy_byoc.sh." >&2
+if [[ -z "$RESOURCE_NAME" ]]; then
+  echo "Error: RESOURCE_NAME is not set. Export it like:" >&2
+  echo "  export RESOURCE_NAME=projects/555OOO555/locations/us-west1/reasoningEngines/7348792672426917888" >&2
   exit 1
 fi
 

@@ -11,21 +11,36 @@ set -e
 # it, then exposes it via the standard :query / :streamQuery endpoints (see
 # trade.sh).
 
-PROJECT_ID="your-project-id"
-REGION="us-west1"
-# Build + push this image from ../08_ContainerizedForAgentPlatform (the FastAPI/BYOC variant
-# that serves the :query / :streamQuery contract), e.g.:
+# Configuration via env vars, with fallbacks so you don't have to edit this file.
+# PROJECT_ID defaults to your active gcloud project.
+PROJECT_ID="${PROJECT_ID:-$(gcloud config get-value project 2>/dev/null)}"
+REGION="${REGION:-us-west1}"
+DISPLAY_NAME="${DISPLAY_NAME:-Trading Agent (BYOC)}"
+
+# Build + push this image from ../08_ContainerizedForAgentPlatform (the FastAPI/BYOC
+# variant that serves the :query / :streamQuery contract), e.g.:
 #   gcloud builds submit ../08_ContainerizedForAgentPlatform --tag "$IMAGE"
-IMAGE="us-west1-docker.pkg.dev/your-project-id/trading-agent/trading-agent/agent-byoc:v1"
-DISPLAY_NAME="Trading Agent (BYOC)"
+# Derived from PROJECT_ID/REGION; override by exporting IMAGE.
+IMAGE="${IMAGE:-${REGION}-docker.pkg.dev/${PROJECT_ID}/trading-agent/trading-agent/agent-byoc:1}"
 
-# Alpaca credentials (shared with the other deployments).
-set -a
-source ../05_Containerized/docker-env
-set +a
+if [[ -z "$PROJECT_ID" ]]; then
+  echo "Error: no project set. Run 'gcloud config set project YOUR_PROJECT' or export PROJECT_ID." >&2
+  exit 1
+fi
 
+# Verify Alpaca credentials
 if [[ -z "$APCA_API_KEY_ID" || -z "$APCA_API_SECRET_KEY" ]]; then
-  echo "Error: APCA_API_KEY_ID and APCA_API_SECRET_KEY must be set (see ../05_Containerized/docker-env)." >&2
+  echo "Error: APCA_API_KEY_ID and APCA_API_SECRET_KEY environment variables must be set." >&2
+  exit 1
+fi
+
+# Fail fast if the image isn't in Artifact Registry yet: Agent Runtime would
+# otherwise accept the deploy and only fail the image pull minutes later.
+echo "Checking image ${IMAGE}..."
+if ! gcloud artifacts docker images describe "$IMAGE" >/dev/null 2>&1; then
+  echo "Error: image not found in Artifact Registry: ${IMAGE}" >&2
+  echo "Build + push it first, e.g.:" >&2
+  echo "  gcloud builds submit ../08_ContainerizedForAgentPlatform --tag ${IMAGE}" >&2
   exit 1
 fi
 
@@ -149,4 +164,5 @@ echo "Deployment complete!"
 echo "Resource name: ${ENGINE_NAME}"
 echo ""
 echo "Run the agent with:"
-echo "  ./trade.sh   # after setting RESOURCE_NAME=${ENGINE_NAME}"
+echo "  export RESOURCE_NAME=${ENGINE_NAME}"
+echo "  ./trade.sh"
