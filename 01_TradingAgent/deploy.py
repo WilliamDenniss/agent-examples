@@ -36,10 +36,13 @@ remote_agent = client.agent_engines.create(
     },
 )
 
+resource_name = remote_agent.api_resource.name
+resource_id = resource_name.split("/")[-1]
+
 print()
 print("Deployment complete!")
-print(f"View in the console: https://console.cloud.google.com/agent-platform/runtimes?project={PROJECT_ID}")
+print(f"View in the console: https://console.cloud.google.com/agent-platform/runtimes/locations/{LOCATION}/agent-engines/{resource_id}/playground?project={PROJECT_ID}")
 print()
 print("To trade, export the resource name and run trade.sh:")
-print(f"  export RESOURCE_NAME={remote_agent.api_resource.name}")
+print(f"  export RESOURCE_NAME={resource_name}")
 print("  ./trade.sh")
