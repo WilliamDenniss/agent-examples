@@ -18,7 +18,7 @@ STAGING_BUCKET = f"gs://{PROJECT_ID}-trading-agent"
 
 vertexai.init(project=PROJECT_ID, location=LOCATION, staging_bucket=STAGING_BUCKET)
 
-print("Deploying ADK Trading Agent...")
+print(f"Deploying ADK Trading Agent to project {PROJECT_ID}...")
 client = vertexai.Client(project=PROJECT_ID, location=LOCATION)
 remote_agent = client.agent_engines.create(
     agent=app,
@@ -38,6 +38,7 @@ remote_agent = client.agent_engines.create(
 
 print()
 print("Deployment complete!")
+print(f"View in the console: https://console.cloud.google.com/agent-platform/runtimes?project={PROJECT_ID}")
 print()
 print("To trade, export the resource name and run trade.sh:")
 print(f"  export RESOURCE_NAME={remote_agent.api_resource.name}")
