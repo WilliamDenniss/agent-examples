@@ -28,6 +28,13 @@ if [[ -z "$PROJECT_ID" ]]; then
   exit 1
 fi
 
+# Load config from ../.env if present (exports each KEY=value line).
+if [[ -f ../.env ]]; then
+  set -a
+  source ../.env
+  set +a
+fi
+
 # Verify Alpaca credentials
 if [[ -z "$APCA_API_KEY_ID" || -z "$APCA_API_SECRET_KEY" ]]; then
   echo "Error: APCA_API_KEY_ID and APCA_API_SECRET_KEY environment variables must be set." >&2

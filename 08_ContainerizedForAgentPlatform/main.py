@@ -33,10 +33,10 @@ app = FastAPI()
 #   - deployed on Agent Runtime, the platform injects it (the engine's own id),
 #     so the agent is self-contained (sessions + Memory Bank in its own resource).
 #   - locally, set GOOGLE_CLOUD_AGENT_ENGINE_ID (+ GOOGLE_CLOUD_PROJECT /
-#     GOOGLE_CLOUD_LOCATION) in docker-env-remote to point at a backend engine.
+#     GOOGLE_CLOUD_LOCATION) in your docker-env file to point at a backend engine.
 # When it's set, AdkApp auto-wires VertexAiSessionService + VertexAiMemoryBankService
 # (the latter supports the agent's add_memory writes). With nothing set (a quick
-# docker.sh run), AdkApp falls back to in-memory services.
+# local docker run), AdkApp falls back to in-memory services.
 adk_app = agent_engines.AdkApp(agent=root_agent)
 
 

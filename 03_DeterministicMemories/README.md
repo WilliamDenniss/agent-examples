@@ -50,8 +50,9 @@ python deploy.py
 
 5. Connect
 
-Edit trade.sh and set your [resource name](https://console.cloud.google.com/agent-platform/runtimes). Then run:
+`deploy.py` prints the resource name (you can also find it in the [console](https://console.cloud.google.com/agent-platform/runtimes)). Export it, then run:
 
 ```
+export RESOURCE_NAME=projects/.../locations/us-west1/reasoningEngines/...
 ./trade.sh
 ```

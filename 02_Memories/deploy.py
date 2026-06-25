@@ -42,4 +42,7 @@ resource_id = resource_name.split("/")[-1]
 print()
 print("Deployment complete!")
 print(f"View in the console: https://console.cloud.google.com/agent-platform/runtimes/locations/{LOCATION}/agent-engines/{resource_id}/playground?project={PROJECT_ID}")
-print(f"Resource name: {resource_name}")
+print()
+print("To trade, export the resource name and run the sibling trade.sh:")
+print(f"  export RESOURCE_NAME={resource_name}")
+print("  ../03_DeterministicMemories/trade.sh")

@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-# Run the BYOC container locally first:
+# Run the BYOC container locally first. Create a `docker-env` file with your
+# Alpaca keys and a Gemini key (APCA_API_KEY_ID, APCA_API_SECRET_KEY,
+# GOOGLE_API_KEY) — see ../05_Containerized/README.md for the format — then:
 #   docker build -t trade-byoc .
 #   docker run -it --rm --env-file docker-env -p 8080:8080 trade-byoc
 #
@@ -19,7 +21,7 @@ if ! SESSION_RESPONSE=$(curl -sS -X POST \
   "$SERVICE_URL/api/reasoning_engine" 2>&1); then
   echo "Error: could not reach the container at $SERVICE_URL." >&2
   echo "  ${SESSION_RESPONSE}" >&2
-  echo "  Is it running?  docker ps   (start it with ./docker.sh)" >&2
+  echo "  Is it running?  docker ps   (build + run it with the commands at the top of this script)" >&2
   exit 1
 fi
 

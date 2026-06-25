@@ -50,8 +50,13 @@ python deploy.py
 
 5. Connect
 
-Edit trade.sh and set your [resource name](https://console.cloud.google.com/agent-platform/runtimes). Then run:
+`deploy.py` prints a playground link — open it to chat with the deployed agent.
+
+To drive it from the command line instead, export the resource name (also
+printed by `deploy.py`) and reuse the sibling trade script, which runs a cycle
+and then re-queries in a fresh session to demonstrate memory recall:
 
 ```
-./trade.sh
+export RESOURCE_NAME=projects/.../locations/us-west1/reasoningEngines/...
+../03_DeterministicMemories/trade.sh
 ```

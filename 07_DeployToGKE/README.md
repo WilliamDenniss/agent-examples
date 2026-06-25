@@ -20,6 +20,9 @@ export MEMORY_SERVICE_URI=$SESSION_SERVICE_URI
 ./deploy.sh
 ```
 
+These four vars can also live in the repo-root `.env` — `deploy.sh` sources it
+automatically, so you can just set them once there and run `./deploy.sh`.
+
 `deploy.sh` checks those four vars are set, (re)creates the `trading-agent-secrets`
 Secret from them, and applies `deploy.yaml`.
 
