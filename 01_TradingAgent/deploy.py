@@ -38,4 +38,7 @@ remote_agent = client.agent_engines.create(
 
 print()
 print("Deployment complete!")
-print(f"Resource name: {remote_agent.api_resource.name}")
+print()
+print("To trade, export the resource name and run trade.sh:")
+print(f"  export RESOURCE_NAME={remote_agent.api_resource.name}")
+print("  ./trade.sh")

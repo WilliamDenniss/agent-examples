@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-# Update with your Agent resource (see https://console.cloud.google.com/agent-platform/runtimes)
-RESOURCE_NAME="projects/555OOO555/locations/us-west1/reasoningEngines/5272175847371964416"
-
-if [[ "$RESOURCE_NAME" == *"555OOO555"* ]]; then
-  echo "Error: Update RESOURCE_NAME in trade.sh with your Agent resource." >&2
+# Set RESOURCE_NAME to the resource name printed by deploy.py
+# (see https://console.cloud.google.com/agent-platform/runtimes).
+if [[ -z "$RESOURCE_NAME" ]]; then
+  echo "Error: RESOURCE_NAME is not set. Export it like:" >&2
+  echo "  export RESOURCE_NAME=projects/555OOO555/locations/us-west1/reasoningEngines/5272175847371964416" >&2
   exit 1
 fi
 
