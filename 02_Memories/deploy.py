@@ -5,15 +5,15 @@ from trading_agent.agent import app
 
 load_dotenv('trading_agent/.env')
 
-# Replace with your project ID, bucket name and preferred region.
+# Replace with your project ID and preferred region.
 PROJECT_ID = "your-project-id"
-STAGING_BUCKET = "gs://your-bucket-name"
 LOCATION = "us-west1"
 
 if PROJECT_ID == "your-project-id":
     raise ValueError("Set PROJECT_ID to your Google Cloud project ID in deploy.py")
-if STAGING_BUCKET == "gs://your-bucket-name":
-    raise ValueError("Set STAGING_BUCKET to your GCS bucket in deploy.py")
+
+# Defaults to gs://$PROJECT_ID-trading-agent; override if needed.
+STAGING_BUCKET = f"gs://{PROJECT_ID}-trading-agent"
 
 vertexai.init(project=PROJECT_ID, location=LOCATION, staging_bucket=STAGING_BUCKET)
 
