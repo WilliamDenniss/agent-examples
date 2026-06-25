@@ -1,9 +1,10 @@
-# Replace with your project ID, bucket name and preferred region.
-PROJECT_ID = "your-project-id"
-LOCATION = "us-west1"
+import google.auth
 
-if PROJECT_ID == "your-project-id":
-    raise ValueError("Set PROJECT_ID to your Google Cloud project ID in backend_deploy.py")
+# Project ID is read from your environment / Application Default Credentials.
+_, PROJECT_ID = google.auth.default()
+if not PROJECT_ID:
+    raise ValueError("No project found. Set GOOGLE_CLOUD_PROJECT or run: gcloud config set project <id>")
+LOCATION = "us-west1"
 
 import vertexai
 

@@ -1,4 +1,5 @@
 import os
+import google.auth
 import vertexai
 from dotenv import load_dotenv
 from trading_agent.agent import app
@@ -6,12 +7,11 @@ from trading_agent.agent import app
 load_dotenv('trading_agent/.env')
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
-# Replace with your project ID and preferred region.
-PROJECT_ID = "your-project-id"
+# Project ID is read from your environment / Application Default Credentials.
+_, PROJECT_ID = google.auth.default()
+if not PROJECT_ID:
+    raise ValueError("No project found. Set GOOGLE_CLOUD_PROJECT or run: gcloud config set project <id>")
 LOCATION = "us-west1"
-
-if PROJECT_ID == "your-project-id":
-    raise ValueError("Set PROJECT_ID to your Google Cloud project ID in deploy.py")
 
 # Defaults to gs://$PROJECT_ID-trading-agent; override if needed.
 STAGING_BUCKET = f"gs://{PROJECT_ID}-trading-agent"
