@@ -20,21 +20,18 @@ spec:
       serviceAccountName: trading-agent
       containers:
         - name: trading-agent
-          image: us-west1-docker.pkg.dev/your-project-id/trading-agent/trading-agent/agent:v1
+          image: docker.io/wdenniss/trading-agent:1
           ports:
             - containerPort: 8080
-          # All env vars from docker-env.
+          # Non-secret config.
           env:
             - name: GOOGLE_GENAI_USE_VERTEXAI
               value: "TRUE"
-            - name: APCA_API_KEY_ID
-              value: your-key-id
-            - name: APCA_API_SECRET_KEY
-              value: your-secret-key
-            - name: SESSION_SERVICE_URI
-              value: agentengine://projects/555OOO555/locations/us-west1/reasoningEngines/5272175847371964416
-            - name: MEMORY_SERVICE_URI
-              value: agentengine://projects/555OOO555/locations/us-west1/reasoningEngines/5272175847371964416
+          # These env vars come from a Secret (created by deploy.sh):
+          # APCA_API_KEY_ID, APCA_API_SECRET_KEY, SESSION_SERVICE_URI, MEMORY_SERVICE_URI.
+          envFrom:
+            - secretRef:
+                name: trading-agent-secrets
           resources:
             requests:
               cpu: ".5"
