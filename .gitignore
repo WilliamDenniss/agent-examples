@@ -1,4 +1,7 @@
 .env
+docker-env
+docker-env-remote
+secret.yaml
 trading-env/
 __pycache__/
 .adk/
