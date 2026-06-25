@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from trading_agent.agent import app
 
 load_dotenv('trading_agent/.env')
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 # Replace with your project ID and preferred region.
 PROJECT_ID = "your-project-id"

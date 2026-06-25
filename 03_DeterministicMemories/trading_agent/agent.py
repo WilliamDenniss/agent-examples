@@ -20,16 +20,18 @@ from google.adk.tools.tool_context import ToolContext
 from google.genai import types
 from vertexai import agent_engines
 
-# Load environment variables
-env_path = os.path.join(os.path.dirname(__file__), '.env')
-load_dotenv(env_path)
+# Load environment variables: local trading_agent/.env (most specific) first,
+# then the shared project .env (repo root) fills in any keys not already set.
+# A real OS env var (e.g. injected by Cloud Run / containers) wins over both.
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '..', '.env'))
 
 # API Keys
 APCA_API_KEY_ID = os.getenv('APCA_API_KEY_ID')
 APCA_API_SECRET_KEY = os.getenv('APCA_API_SECRET_KEY')
 
 if not APCA_API_KEY_ID:
-    sys.exit("Error: APCA_API_KEY_ID environment variable is not set. Did you create your `trading_agent/.env` file?")
+    sys.exit("Error: APCA_API_KEY_ID environment variable is not set. Did you create your `trading_agent/.env` or the project root `.env`?")
 
 # Initialize Alpaca Clients
 trading_client = TradingClient(APCA_API_KEY_ID, APCA_API_SECRET_KEY, paper=True)
