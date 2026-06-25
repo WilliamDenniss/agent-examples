@@ -1,7 +1,11 @@
 #!/bin/bash
 set -e
 
-SERVICE_URL="https://trading-agent-555000555.us-west1.run.app"
+if [[ -z "$SERVICE_URL" ]]; then
+  echo "Error: SERVICE_URL environment variable must be set (see deploy_cloudrun.sh output)." >&2
+  echo "  e.g. export SERVICE_URL=\$(gcloud run services describe trading-agent --region us-west1 --format='value(status.url)')" >&2
+  exit 1
+fi
 
 APP_NAME="trading_agent"
 USER_ID="user1"

@@ -1,25 +1,33 @@
 #!/bin/bash
 set -e
 
-PROJECT_ID="your-project-id"
-REGION="us-west1"
-SERVICE_NAME="trading-agent"
-
-MEMORY_SERVICE_URI=agentengine://projects/555OOO555/locations/us-west1/reasoningEngines/5272175847371964416
-SESSION_SERVICE_URI=$MEMORY_SERVICE_URI
-
-if [[ "$MEMORY_SERVICE_URI" == *"555OOO555"* ]]; then
-  echo "Error: Update MEMORY_SERVICE_URI your Agent resource." >&2
+# project where Cloud Run runs (and the reasoning engine lives)
+PROJECT_ID="$(gcloud config get-value project 2>/dev/null)"
+if [[ -z "$PROJECT_ID" || "$PROJECT_ID" == "(unset)" ]]; then
+  echo "Error: no gcloud project configured. Run 'gcloud config set project PROJECT_ID'." >&2
   exit 1
 fi
 
-set -a
-source ../05_Containerized/docker-env
-set +a
+REGION="us-west1"
+SERVICE_NAME="trading-agent"
 
-# Require Alpaca credentials (sourced from docker-env above).
+# Load config from ../.env if present (exports each KEY=value line).
+if [[ -f ../.env ]]; then
+  set -a
+  source ../.env
+  set +a
+fi
+
+# Require Alpaca credentials.
 if [[ -z "$APCA_API_KEY_ID" || -z "$APCA_API_SECRET_KEY" ]]; then
-  echo "Error: APCA_API_KEY_ID and APCA_API_SECRET_KEY must be set (see ../05_Containerized/docker-env)." >&2
+  echo "Error: APCA_API_KEY_ID and APCA_API_SECRET_KEY environment variables must be set." >&2
+  exit 1
+fi
+
+# Require the Agent Platform Session + Memory service URIs.
+if [[ -z "$SESSION_SERVICE_URI" || -z "$MEMORY_SERVICE_URI" ]]; then
+  echo "Error: SESSION_SERVICE_URI and MEMORY_SERVICE_URI environment variables must be set." >&2
+  echo "  e.g. export SESSION_SERVICE_URI=agentengine://projects/PROJECT/locations/REGION/reasoningEngines/ENGINE_ID" >&2
   exit 1
 fi
 
@@ -56,5 +64,7 @@ gcloud run deploy "$SERVICE_NAME" \
 
 echo ""
 echo "Deployment complete!"
-echo "Service URL:"
-gcloud run services describe "$SERVICE_NAME" --region "$REGION" --project "$PROJECT_ID" --format="value(status.url)"
+SERVICE_URL=$(gcloud run services describe "$SERVICE_NAME" --region "$REGION" --project "$PROJECT_ID" --format="value(status.url)")
+echo "Run the agent with:"
+echo "  export SERVICE_URL=${SERVICE_URL}"
+echo "  ./run_trade.sh"
