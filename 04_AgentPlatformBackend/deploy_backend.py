@@ -11,12 +11,14 @@ import vertexai
 client = vertexai.Client(project=PROJECT_ID, location=LOCATION)
 
 # create the resource
+print(f"Deploying Agent Backend Resource to project {PROJECT_ID}...")
 memory_bank = client.agent_engines.create(
     config={
         "display_name": "Agent Backend Resource",
     }
 )
 engine_name = memory_bank.api_resource.name
+engine_id = engine_name.split("/")[-1]
 print(engine_name)
 
 client.agent_engines.memories.create(
@@ -31,6 +33,7 @@ client.agent_engines.sessions.create(
 )
 print()
 print("Deployment complete!")
+print(f"View in the console: https://console.cloud.google.com/agent-platform/runtimes/locations/{LOCATION}/agent-engines/{engine_id}/dashboard?project={PROJECT_ID}")
 print(f"Resource name: {engine_name}")
 print()
 print("Add these to your docker-env (or deploy env):")

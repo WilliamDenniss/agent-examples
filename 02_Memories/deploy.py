@@ -18,7 +18,7 @@ STAGING_BUCKET = f"gs://{PROJECT_ID}-trading-agent"
 
 vertexai.init(project=PROJECT_ID, location=LOCATION, staging_bucket=STAGING_BUCKET)
 
-print("Deploying ADK Trading Agent with Memory Bank...")
+print(f"Deploying ADK Trading Agent with Memory Bank to project {PROJECT_ID}...")
 client = vertexai.Client(project=PROJECT_ID, location=LOCATION)
 remote_agent = client.agent_engines.create(
     agent=app,
@@ -36,6 +36,10 @@ remote_agent = client.agent_engines.create(
     },
 )
 
+resource_name = remote_agent.api_resource.name
+resource_id = resource_name.split("/")[-1]
+
 print()
 print("Deployment complete!")
-print(f"Resource name: {remote_agent.api_resource.name}")
+print(f"View in the console: https://console.cloud.google.com/agent-platform/runtimes/locations/{LOCATION}/agent-engines/{resource_id}/playground?project={PROJECT_ID}")
+print(f"Resource name: {resource_name}")
